@@ -1,0 +1,30 @@
+{
+  "name": "cannabis",
+  "version": "1.0.0",
+  "description": "cannabis ecommerce",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dev-ideausher/cannabis.git"
+  },
+  "keywords": [
+    "cannabis"
+  ],
+  "author": "Karthick Raja G",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/dev-ideausher/cannabis/issues"
+  },
+  "homepage": "https://github.com/dev-ideausher/cannabis#readme",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.18.1",
+    "mongoose": "^6.4.4",
+    "mongoose-autopopulate": "^0.16.1",
+    "path": "^0.12.7"
+  }
+}
