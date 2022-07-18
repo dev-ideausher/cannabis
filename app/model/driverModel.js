@@ -16,6 +16,9 @@ const DriverSchema = new mongoose.Schema({
     is_otp_verified: {
         type: Boolean,
         default: false
+    },
+    password:{
+        type: String
     }
 }, {
     timestamps: true,

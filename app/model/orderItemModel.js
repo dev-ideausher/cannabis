@@ -13,13 +13,7 @@ const OrderItemsDetailsSchema = new mongoose.Schema({
   price: {
     type: Number
   },
-  gst: {
-    type: Number
-  },
   discount: {
-    type: Number
-  },
-  gst_amount: {
     type: Number
   },
   quanity: {
@@ -32,7 +26,7 @@ const OrderItemsDetailsSchema = new mongoose.Schema({
 })
 const collectionName = 'order_items'
 OrderItemsDetailsSchema.virtual('orderItem_id').get(function() { return this._id })
-OrderItemsDetailsSchema.virtual('unit_price').get(function() { return Math.round(this.price / this.quanity); });
+OrderItemsDetailsSchema.virtual('unit_price').get(function() { return Math.round(this.price / this.quanity) })
 
 OrderItemsDetailsSchema.set('toJSON', {
   virtuals: true,
@@ -44,5 +38,5 @@ OrderItemsDetailsSchema.set('toJSON', {
     delete ret.createdAt
   }
 })
-OrderItemsDetailsSchema.plugin(require('mongoose-autopopulate'));
+OrderItemsDetailsSchema.plugin(require('mongoose-autopopulate'))
 module.exports = mongoose.model('OrderItemDetails', OrderItemsDetailsSchema, collectionName)

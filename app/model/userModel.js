@@ -1,4 +1,6 @@
 const mongoose = require('mongoose')
+const config = require('../helper/config').get(process.env.NODE_ENV)
+
 const Schema = mongoose.Schema
 const userSchema = new mongoose.Schema({
     mobile: {
@@ -35,21 +37,24 @@ const userSchema = new mongoose.Schema({
     },
     backId: {
         type: String
+    },
+    is_referral_bonus_Sent:{
+        type: Boolean
     }
 }, {
     timestamps: true,
     strict: true
 })
-userDetailsSchema.virtual('user_id').get(function() { return this._id; })
-userDetailsSchema.virtual('frontId').get(function() { return config.BaseUrl+this.frontId })
-userDetailsSchema.virtual('backId').get(function() { return config.BaseUrl+this.backId })
+userSchema.virtual('user_id').get(function() { return this._id; })
+userSchema.virtual('front_id').get(function() { if(this.frontId != undefined){return config.BaseUrl+this.frontId} else {return ''} })
+userSchema.virtual('back_id').get(function() { if(this.backId != undefined){return config.BaseUrl+this.backId} else {return ''} })
 
-userDetailsSchema.virtual('address', {
+userSchema.virtual('address', {
     ref: 'AddressDetails',
     localField: '_id',
     foreignField: 'user'
 });
-userDetailsSchema.set('toJSON', {
+userSchema.set('toJSON', {
     virtuals: true,
     transform: (doc, ret, options) => {
         delete ret.__v
@@ -59,4 +64,4 @@ userDetailsSchema.set('toJSON', {
         delete ret.createdAt
     },
 });
-module.exports = mongoose.model('UserDetails', userDetailsSchema, 'UserDetails')
+module.exports = mongoose.model('UserDetails', userSchema, 'UserDetails')

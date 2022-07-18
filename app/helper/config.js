@@ -1,23 +1,25 @@
 const config = {
     default: {
-      jwtSecret: 'ideaUsher@2021',
+      jwtSecret: 'ideaUsher@2022',
       database: {
         url: 'mongodb://localhost:27017/cannabisdb',
         username: '',
         password: ''
       },
-      SALT: 'cannbis@!*><2020',
+      SALT: 'cannabis@!*><2022',
+      HeadersUrl:'localhost:6000',
       BaseUrl: 'https://localhost:6000/',
       port: 6000
     },
     development: {
-        jwtSecret: 'ideaUsher@2021',
+        jwtSecret: 'ideaUsher@2',
         database: {
           url: 'mongodb://localhost:27017/cannabisdb',
           username: '',
           password: ''
         },
-        SALT: 'cannbis@!*><2020',
+        SALT: 'cannabis@!*><2022',
+        HeadersUrl:'localhost:6000',
         BaseUrl: 'https://localhost:6000/',
         port: 6000
     }

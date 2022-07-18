@@ -20,6 +20,6 @@ app.use(function(req, res, next) {
   next();
 });
 
-require('./app/routes.js')
+require('./app/routes.js')(app)
 app.listen(config.port, () => console.log('server is connected on port ' + config.port))
 

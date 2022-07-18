@@ -6,7 +6,7 @@ var Timezone = require("../providers/timezone.js");
 
 const OrderDetailsSchema = new mongoose.Schema({
     order_no: { type: String },
-    prefix: { type: String, default: 'CAN' },
+    prefix: { type: String, default: 'CANNABIS' },
     user: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'UserDetails',

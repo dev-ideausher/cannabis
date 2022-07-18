@@ -29,4 +29,5 @@ productImageDetailsSchema.set('toJSON', {
   },
 });
 
+productImageDetailsSchema.plugin(require('mongoose-autopopulate'))
 module.exports = mongoose.model('ProductImageDetails',productImageDetailsSchema,collectionName)

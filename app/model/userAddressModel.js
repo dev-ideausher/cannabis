@@ -33,8 +33,8 @@ const addressDetailsSchema = new mongoose.Schema({
     strict: true
 })
 
-addressDetailsSchema.virtual('address_id').get(function() { return this._id; });
-addressDetailsSchema.virtual('user_id').get(function() { return this.user; });
+addressDetailsSchema.virtual('address_id').get(function() { return this._id })
+addressDetailsSchema.virtual('user_id').get(function() { return this.user })
 addressDetailsSchema.set('toJSON', {
     virtuals: true,
     transform: (doc, ret, options) => {
@@ -46,5 +46,5 @@ addressDetailsSchema.set('toJSON', {
         delete ret.createdAt
     },
 });
-addressDetailsSchema.plugin(require('mongoose-autopopulate'));
+addressDetailsSchema.plugin(require('mongoose-autopopulate'))
 module.exports = mongoose.model('AddressDetails', addressDetailsSchema, 'AddressDetails')

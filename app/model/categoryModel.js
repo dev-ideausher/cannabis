@@ -30,4 +30,6 @@ categorySchema.set('toJSON', {
     delete ret.parent
   }
 })
+
+categorySchema.plugin(require('mongoose-autopopulate'))
 module.exports = mongoose.model('Category', categorySchema, 'category')
