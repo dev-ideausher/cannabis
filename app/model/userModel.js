@@ -14,6 +14,9 @@ const userSchema = new mongoose.Schema({
         type: String,
         default: ''
     },
+    dob:{
+        type:Date
+    },
     role: {
         type: Schema.Types.ObjectId,
         ref: 'Role'
@@ -40,11 +43,15 @@ const userSchema = new mongoose.Schema({
     },
     is_referral_bonus_Sent:{
         type: Boolean
+    },
+    otp:{
+        type: Number
     }
 }, {
     timestamps: true,
     strict: true
 })
+
 userSchema.virtual('user_id').get(function() { return this._id; })
 userSchema.virtual('front_id').get(function() { if(this.frontId != undefined){return config.BaseUrl+this.frontId} else {return ''} })
 userSchema.virtual('back_id').get(function() { if(this.backId != undefined){return config.BaseUrl+this.backId} else {return ''} })
@@ -53,7 +60,8 @@ userSchema.virtual('address', {
     ref: 'AddressDetails',
     localField: '_id',
     foreignField: 'user'
-});
+})
+
 userSchema.set('toJSON', {
     virtuals: true,
     transform: (doc, ret, options) => {
@@ -62,6 +70,6 @@ userSchema.set('toJSON', {
         delete ret.id
         delete ret.updatedAt
         delete ret.createdAt
-    },
-});
+    }
+})
 module.exports = mongoose.model('UserDetails', userSchema, 'UserDetails')

@@ -9,7 +9,10 @@ const config = {
       SALT: 'cannabis@!*><2022',
       HeadersUrl:'localhost:6000',
       BaseUrl: 'https://localhost:6000/',
-      port: 6000
+      port: 6000,
+      AWS_ACCESS_KEY:"",
+      AWS_SECRET_KEY:"",
+      AWS_S3_BUCKET_NAME:""
     },
     development: {
         jwtSecret: 'ideaUsher@2',
@@ -21,7 +24,10 @@ const config = {
         SALT: 'cannabis@!*><2022',
         HeadersUrl:'localhost:6000',
         BaseUrl: 'https://localhost:6000/',
-        port: 6000
+        port: 6000,
+        AWS_ACCESS_KEY:"",
+        AWS_SECRET_KEY:"",
+        AWS_S3_BUCKET_NAME:""
     }
   }
   

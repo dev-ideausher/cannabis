@@ -26,7 +26,8 @@ const addressDetailsSchema = new mongoose.Schema({
         default: 0
     },
     isDefault: {
-        type: Boolean
+        type: Boolean,
+        default: false
     }
 }, {
     timestamps: true,
