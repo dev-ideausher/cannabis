@@ -5,7 +5,8 @@ const categorySchema = new mongoose.Schema({
     type: String
   },
   is_active: {
-    type: String
+    type: Boolean,
+    default: true
   },
   parent: {
     type: mongoose.Schema.Types.ObjectId,
@@ -27,9 +28,8 @@ categorySchema.set('toJSON', {
     delete ret.createdAt
     delete ret.updatedAt
     delete ret.is_active
-    delete ret.parent
   }
 })
 
 categorySchema.plugin(require('mongoose-autopopulate'))
-module.exports = mongoose.model('Category', categorySchema, 'category')
+module.exports = mongoose.model('Category', categorySchema, 'Category')

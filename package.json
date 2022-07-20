@@ -30,6 +30,7 @@
     "moment-timezone": "^0.5.34",
     "mongoose": "^6.4.4",
     "mongoose-autopopulate": "^0.16.1",
+    "nodemon": "^2.0.19",
     "path": "^0.12.7"
   }
 }

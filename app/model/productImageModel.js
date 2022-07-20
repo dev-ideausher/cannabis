@@ -13,7 +13,7 @@ const productImageDetailsSchema = new mongoose.Schema({
   timestamps: true,
   strict: true
 })
-var collectionName = 'product_images'
+var collectionName = 'ProductImageDetails'
 productImageDetailsSchema.virtual('product_image_id').get(function() { return this._id; })
 productImageDetailsSchema.virtual('product_id').get(function() { return this.product; })
 productImageDetailsSchema.virtual('image').get(function() { return config.BaseUrl+this.image_url })

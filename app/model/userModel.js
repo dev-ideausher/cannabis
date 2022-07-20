@@ -18,8 +18,7 @@ const userSchema = new mongoose.Schema({
         type:Date
     },
     role: {
-        type: Schema.Types.ObjectId,
-        ref: 'Role'
+        type: Number
     },
     is_otp_verified: {
         type: Boolean

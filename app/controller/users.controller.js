@@ -1,4 +1,3 @@
-const express = require('express')
 const Users = require('../model/userModel')
 const config = require('../helper/config').get(process.env.NODE_ENV)
 const jwt = require('jwt-simple')
@@ -136,9 +135,9 @@ exports.getUsers = async (req, res) => {
         if(err) {
             res.send({ status: 'error', message: 'error occured'})
         } else if (found) {
-            return res.status(200).json({status: true, message:'user profile found', data: { found} })
+            return res.status(200).json({status: true, message:'user profile found', data: found})
         } else {
             return res.send({status: false, message: 'user profile not found'})
         }
-    })
+    }).populate('address')
   }
