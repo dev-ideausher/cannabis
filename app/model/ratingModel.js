@@ -9,6 +9,10 @@ const ratingsDetailsSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'OrdersDetails'
   },
+  product:{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'ProductDetails'
+  },
   ratings: {
     type: Number
   },

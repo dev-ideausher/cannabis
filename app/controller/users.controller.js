@@ -1,4 +1,6 @@
 const Users = require('../model/userModel')
+const Ratings = require('../model/ratingModel')
+const Measurements = require('../model/measurementModel')
 const config = require('../helper/config').get(process.env.NODE_ENV)
 const jwt = require('jwt-simple')
 const Helper = require('../helper/authtoken')
@@ -127,10 +129,12 @@ exports.userupdate = async (req, res) => {
 
 // get one user info
 exports.getUsers = async (req, res) => {
-    const errors = validationResult(req)
-    if (!errors.isEmpty()) {
-      return res.status(400).json({ success: false, message: 'Invalid Inputs', errors: errors.array(), code: 'INVALID_INPUT' })
-    }
+   //auth token validate
+   const authParams = config.SALT
+   if (!Helper.checkAuthToken(req.headers.auth_token, authParams)) {
+     return res.status(200).json({ success: false, message: 'Authentication Failed', parameters: null })
+   }
+    //user details
     Users.findOne({ _id: req.user_id, is_deleted: false }, function (err, found) {
         if(err) {
             res.send({ status: 'error', message: 'error occured'})
@@ -141,3 +145,122 @@ exports.getUsers = async (req, res) => {
         }
     }).populate('address')
   }
+
+//add rating for product
+exports.addRating = async (req, res) => {
+    //auth token validate
+    const authParams = config.SALT
+    if (!Helper.checkAuthToken(req.headers.auth_token, authParams)) {
+    return res.status(200).json({ success: false, message: 'Authentication Failed', parameters: null })
+    }
+    const ratingJson = {
+        user:req.user_id,
+        product:req.body.productId?req.body.productId:null,
+        order:req.body.orderId?req.body.orderId:null,
+        ratings:req.body.ratings,
+        feedback:req.body.feedback
+    }
+    const ratings = await Ratings.create(ratingJson)
+    res.status(200).json({status: true, message:'Feedback addedd', data:ratings})
+}
+
+// ratings list
+exports.getRatings = async (req, res) => {
+    //auth token validate
+    const authParams = config.SALT
+    if (!Helper.checkAuthToken(req.headers.auth_token, authParams)) {
+    return res.status(200).json({ success: false, message: 'Authentication Failed', parameters: null })
+    }
+    // measurements list
+    Ratings.find( {product:req.params.id},function (err, found) {
+        if(err) {
+            res.send({ status: 'error', message: 'error occured'})
+        } else if (found.length>0) {
+            return res.status(200).json({status: true, message:'Ratings found', data: found})
+        } else {
+            return res.send({status: false, message: 'Ratings not found'})
+        }
+    })
+}
+
+
+// add measurements by admin
+exports.addMeasurements = async (req, res) => {
+    //auth token validate
+    const authParams = config.SALT
+    if (!Helper.checkAuthToken(req.headers.auth_token, authParams)) {
+    return res.status(200).json({ success: false, message: 'Authentication Failed', parameters: null })
+    }
+    //i/p validation
+    const errors = validationResult(req)
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ success: false, message: 'Invalid Inputs', errors: errors.array(), code: 'INVALID_INPUT' })
+    }
+    const measurementJson = {
+        measurement_name:req.body.measurement_name,
+        symbol:req.body.symbol,
+        is_active:req.body.is_active
+    }
+    const measurement = await Measurements.create(measurementJson)
+    res.send({status:true, message:"measurement added", data:measurement})
+}
+
+// measurement list
+exports.getMeasurements = async (req, res) => {
+    //auth token validate
+    const authParams = config.SALT
+    if (!Helper.checkAuthToken(req.headers.auth_token, authParams)) {
+    return res.status(200).json({ success: false, message: 'Authentication Failed', parameters: null })
+    }
+    // measurements list
+    Measurements.find( function (err, found) {
+        if(err) {
+            res.send({ status: 'error', message: 'error occured'})
+        } else if (found.length>0) {
+            return res.status(200).json({status: true, message:'measurements found', data: found})
+        } else {
+            return res.send({status: false, message: 'measurements not found'})
+        }
+    })
+}
+
+// update measurements
+exports.updateMeasurements = async (req, res) => {
+    //auth token validate
+    const authParams = config.SALT
+    if (!Helper.checkAuthToken(req.headers.auth_token, authParams)) {
+    return res.status(200).json({ success: false, message: 'Authentication Failed', parameters: null })
+    }
+    //i/p validation
+    const errors = validationResult(req)
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ success: false, message: 'Invalid Inputs', errors: errors.array(), code: 'INVALID_INPUT' })
+    }
+    const measurementJson = {
+        measurement_name:req.body.measurement_name,
+        symbol:req.body.symbol,
+        is_active:req.body.is_active
+    }
+    // update
+    Measurements.findOneAndUpdate( {_id: req.body.measurementId}, measurementJson, function (err, updated) {
+        if(err) {
+            res.send({ status: 'error', message: 'error occured'})
+        } else if (updated) {
+            return res.status(200).json({status: true, message:'measurements updated', data: updated})
+        } else {
+            return res.send({status: false, message: 'measurements not updated'})
+        }
+    })
+}
+
+// delete measurement
+exports.deleteMeasurements = async(req, res) => {
+    //auth token validate
+    const authParams = config.SALT
+    if (!Helper.checkAuthToken(req.headers.auth_token, authParams)) {
+    return res.status(200).json({ success: false, message: 'Authentication Failed', parameters: null })
+    }
+    await Measurements.deleteOne({_id: req.params.Id})
+    res.send({status: true, message: 'measurement deleted successfully'})
+
+}

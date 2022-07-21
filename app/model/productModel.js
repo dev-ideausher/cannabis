@@ -7,21 +7,15 @@ const productDetailsSchema = new mongoose.Schema({
   description: {
     type: String
   },
-  price: {
-    type: Number,
-    default: 0
-  },
-  selling_price: {
-    type: Number,
-    default: 0
-  },
-  discount: {
-    type: Number,
-    default: 0
-  },
   is_active: {
     type: Boolean,
     default: true
+  },
+  license_no: {
+    type:String
+  },
+  image_url:{
+    type:String
   },
   effects:[{ name:String, percentage:String }],
   category: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Category', autopopulate: true  }],
@@ -36,12 +30,12 @@ const productDetailsSchema = new mongoose.Schema({
 const collectionName = 'products'
 productDetailsSchema.virtual('product_id').get(function () { return this._id })
 
-// productDetailsSchema.virtual('images', {
-//   ref: 'ProductImageDetails',
-//   localField: '_id',
-//   foreignField: 'product',
-//   autopopulate: true
-// })
+productDetailsSchema.virtual('ratings', {
+  ref: 'Ratings',
+  localField: '_id',
+  foreignField: 'product',
+  autopopulate: true
+})
 
 productDetailsSchema.set('toJSON', {
   virtuals: true,
