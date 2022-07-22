@@ -17,6 +17,9 @@ const productDetailsSchema = new mongoose.Schema({
   image_url:{
     type:String
   },
+  product_type:{
+    type:String
+  },
   effects:[{ name:String, percentage:String }],
   category: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Category', autopopulate: true  }],
   added_by: {
@@ -32,6 +35,13 @@ productDetailsSchema.virtual('product_id').get(function () { return this._id })
 
 productDetailsSchema.virtual('ratings', {
   ref: 'Ratings',
+  localField: '_id',
+  foreignField: 'product',
+  autopopulate: true
+})
+
+productDetailsSchema.virtual('stock_price', {
+  ref: 'InventoryDetails',
   localField: '_id',
   foreignField: 'product',
   autopopulate: true

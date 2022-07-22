@@ -262,5 +262,4 @@ exports.deleteMeasurements = async(req, res) => {
     }
     await Measurements.deleteOne({_id: req.params.Id})
     res.send({status: true, message: 'measurement deleted successfully'})
-
 }
