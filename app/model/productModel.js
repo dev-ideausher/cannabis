@@ -20,6 +20,9 @@ const productDetailsSchema = new mongoose.Schema({
   product_type:{
     type:String
   },
+  discount:{
+    type: Number
+  },
   effects:[{ name:String, percentage:String }],
   category: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Category', autopopulate: true  }],
   added_by: {

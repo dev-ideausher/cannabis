@@ -1,6 +1,7 @@
 const Users = require('../model/userModel')
 const Ratings = require('../model/ratingModel')
 const Measurements = require('../model/measurementModel')
+const Banners = require('../model/bannerModel')
 const config = require('../helper/config').get(process.env.NODE_ENV)
 const jwt = require('jwt-simple')
 const Helper = require('../helper/authtoken')
@@ -213,7 +214,7 @@ exports.getMeasurements = async (req, res) => {
     return res.status(200).json({ success: false, message: 'Authentication Failed', parameters: null })
     }
     // measurements list
-    Measurements.find( function (err, found) {
+    Measurements.find( {is_active:true}, function (err, found) {
         if(err) {
             res.send({ status: 'error', message: 'error occured'})
         } else if (found.length>0) {
@@ -262,4 +263,84 @@ exports.deleteMeasurements = async(req, res) => {
     }
     await Measurements.deleteOne({_id: req.params.Id})
     res.send({status: true, message: 'measurement deleted successfully'})
+}
+
+//add Banner
+exports.addBanner = async (req, res) => {
+    //auth token validate
+    const authParams = config.SALT
+    if (!Helper.checkAuthToken(req.headers.auth_token, authParams)) {
+    return res.status(200).json({ success: false, message: 'Authentication Failed', parameters: null })
+    }
+    //i/p validation
+    const errors = validationResult(req)
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ success: false, message: 'Invalid Inputs', errors: errors.array(), code: 'INVALID_INPUT' })
+    }
+    const bannerJson = {
+        banner_type:req.body.banner_type,
+        image_url:req.body.image_url,
+        is_active:req.body.is_active
+    }
+    const banner = await Banners.create(bannerJson)
+    res.send({status:true, message:"banner added", data:banner})
+}
+
+//update banner
+exports.updateBanner = async (req, res) => {
+    //auth token validate
+    const authParams = config.SALT
+    if (!Helper.checkAuthToken(req.headers.auth_token, authParams)) {
+    return res.status(200).json({ success: false, message: 'Authentication Failed', parameters: null })
+    }
+    //i/p validation
+    const errors = validationResult(req)
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ success: false, message: 'Invalid Inputs', errors: errors.array(), code: 'INVALID_INPUT' })
+    }
+    const bannerJson = {
+        banner_type:req.body.banner_type,
+        image_url:req.body.image_url,
+        is_active:req.body.is_active
+    }
+    // update
+    Banners.findOneAndUpdate( {_id: req.body.bannerId}, bannerJson, function (err, updated) {
+        if(err) {
+            res.send({ status: 'error', message: 'error occured'})
+        } else if (updated) {
+            return res.status(200).json({status: true, message:'banner updated', data: updated})
+        } else {
+            return res.send({status: false, message: 'banner not updated'})
+        }
+    })
+}
+
+//banner list
+exports.getBanner = async (req, res) => {
+    //auth token validate
+    const authParams = config.SALT
+    if (!Helper.checkAuthToken(req.headers.auth_token, authParams)) {
+    return res.status(200).json({ success: false, message: 'Authentication Failed', parameters: null })
+    }
+    // measurements list
+    Banners.find({is_active: true}, function (err, found) {
+        if(err) {
+            res.send({ status: 'error', message: 'error occured'})
+        } else if (found.length>0) {
+            return res.status(200).json({status: true, message:'banner found', data: found})
+        } else {
+            return res.send({status: false, message: 'banner not found'})
+        }
+    })
+}
+
+//delete banner
+exports.deleteBanner = async(req, res) => {
+    //auth token validate
+    const authParams = config.SALT
+    if (!Helper.checkAuthToken(req.headers.auth_token, authParams)) {
+    return res.status(200).json({ success: false, message: 'Authentication Failed', parameters: null })
+    }
+    await Banners.deleteOne({_id: req.params.Id})
+    res.send({status: true, message: 'banner deleted successfully'})
 }

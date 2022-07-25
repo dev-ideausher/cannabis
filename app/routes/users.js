@@ -38,6 +38,8 @@ router.get('/getRatings/:id', users.getRatings)
 
 
 // admin routes
+
+// measurement routes
 router.post('/addMeasurements',[
   check('measurement_name')
   .escape(),
@@ -57,6 +59,27 @@ router.post('/updateMeasurements',[
 ], [isAdminLoggedIn], users.updateMeasurements)
 
 router.get('/deleteMeasurement/:id', [isAdminLoggedIn], users.deleteMeasurements)
+
+//banner routes
+router.post('/addBanner',[
+  check('banner_type')
+  .escape(),
+  check('image_url')
+  .escape()
+], [isAdminLoggedIn], users.addBanner)
+
+router.post('/updateBanner',[
+  check('banner_type')
+  .escape(),
+  check('image_url')
+  .escape(),
+  check('bannerId')
+  .escape(),
+], [isAdminLoggedIn], users.updateBanner)
+
+router.get('/getBanner', [isAdminLoggedIn], users.getBanner)
+
+router.get('/deleteBanner/:id', [isAdminLoggedIn], users.deleteBanner)
 
 
 

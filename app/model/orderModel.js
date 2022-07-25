@@ -1,7 +1,5 @@
 const mongoose = require('mongoose')
-const autoIncrement = require('mongoose-auto-increment-fix');
-const Orders = require('../data/orders.js')
-var Timezone = require("../providers/timezone.js");
+var Timezone = require("../helper/timezone.js")
 
 
 const OrderDetailsSchema = new mongoose.Schema({
@@ -45,12 +43,6 @@ const OrderDetailsSchema = new mongoose.Schema({
     discount: {
         type: Number
     },
-    tax: {
-        type: Number
-    },
-    tax_amount: {
-        type: Number
-    },
     status: {
         type: Number,
         default: 1
@@ -77,45 +69,32 @@ const OrderDetailsSchema = new mongoose.Schema({
     orderedDate: {
         type: Date
     },
-    timeslots: {
-        type: String
-    },
-    start_time: {
-        type: String
-    },
-    end_time: {
-        type: String
-    },
     month: {
         type: Number
     },
     year: {
         type: Number
     },
-    order_source: { type: String },
     refund: { refund_id: { type: String }, status: { type: Number }, date: { type: Date } },
     deliveredDate: {
         type: Date
     },
     deliveryDate: {
         type: Date
+    },
+    is_active:{
+        type: Boolean
     }
 }, {
     timestamps: true,
     strict: true
 })
 var collectionName = 'orders'
-autoIncrement.initialize(mongoose);
-OrderDetailsSchema.plugin(autoIncrement.plugin, {
-    model: 'orders',
-    field: 'invoice_no',
-    startAt: 1,
-    incrementBy: 1
-});
+
 OrderDetailsSchema.virtual('order_id').get(function () { return this._id })
-OrderDetailsSchema.virtual('order_date').get(function () { return Timezone.changeFormat(this.date, 'YYYY-MM-DD'); });
-OrderDetailsSchema.virtual('order_time').get(function () { return Timezone.changeFormat(this.date, 'hh:mm a'); });
-OrderDetailsSchema.virtual('gtotal').get(function () { return (this.line_total + this.shipping_cost) - this.discount_cost });
+OrderDetailsSchema.virtual('order_date').get(function () { return Timezone.changeFormat(this.date, 'YYYY-MM-DD') })
+OrderDetailsSchema.virtual('order_time').get(function () { return Timezone.changeFormat(this.date, 'hh:mm a') })
+OrderDetailsSchema.virtual('gtotal').get(function () { return (this.line_total + this.shipping_cost) - this.discount_cost })
 
 OrderDetailsSchema.virtual('order_status').get(function () {
   return Orderstatus(this.status)
@@ -149,7 +128,7 @@ OrderDetailsSchema.virtual('feedbacks', {
     ref: 'Ratings',
     localField: '_id',
     foreignField: 'order'
-});
+})
 OrderDetailsSchema.set('toJSON', {
     virtuals: true,
     transform: (doc, ret, options) => {
