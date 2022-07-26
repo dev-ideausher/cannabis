@@ -10,9 +10,9 @@ const config = {
       HeadersUrl:'localhost:6000',
       BaseUrl: 'https://localhost:6000/',
       port: 6000,
-      AWS_ACCESS_KEY:"",
-      AWS_SECRET_KEY:"",
-      AWS_S3_BUCKET_NAME:""
+      AWS_ACCESS_KEY:"AKIAYBTHCJZG6SQKCB4O",
+      AWS_SECRET_KEY:"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",
+      AWS_S3_USER_BUCKET_NAME:"cannabisimage"
     },
     development: {
         jwtSecret: 'ideaUsher@2',
@@ -25,9 +25,9 @@ const config = {
         HeadersUrl:'localhost:6000',
         BaseUrl: 'https://localhost:6000/',
         port: 6000,
-        AWS_ACCESS_KEY:"",
-        AWS_SECRET_KEY:"",
-        AWS_S3_BUCKET_NAME:""
+        AWS_ACCESS_KEY:"AKIAYBTHCJZG6SQKCB4O",
+        AWS_SECRET_KEY:"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",
+        AWS_S3_USER_BUCKET_NAME:"cannabisimage"
     }
   }
   

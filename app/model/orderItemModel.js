@@ -16,7 +16,7 @@ const OrderItemsDetailsSchema = new mongoose.Schema({
   discount: {
     type: Number
   },
-  quanity: {
+  quantity: {
     type: Number
   }
 },

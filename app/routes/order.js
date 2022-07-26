@@ -6,16 +6,18 @@ const isLoggedIn = require('../helper/isLoggedIn')
 const isAdminLoggedIn = require('../helper/isAdminLoggedIn')
 
 // user routes
-router.post('/order',[
-    check('total')
-      .escape(),
+
+// user create order
+router.post('/create_order',[
     check('line_total')
       .escape(),
     check('shipping_cost')
     .escape(),
+    check('discount_cost')
+    .escape(),
     check('driver')
     .escape(),
-    check('shipping_cost')
+    check('user')
     .escape(),
     check('shipping_address_id')
     .escape(),
@@ -25,6 +27,47 @@ router.post('/order',[
     .escape(),
     check('deliveryDate')
     .escape(),
-  ], orders.create_order)
+  ], [isLoggedIn], orders.create_order)
+
+  //list orders
+  router.get('/getUserOrders', [isLoggedIn], orders.getUserOrders)
+
+
+  //admin routes
+
+  //admin create order
+  router.post('/admin_create_order',[
+    check('total')
+      .escape(),
+    check('line_total')
+      .escape(),
+    check('shipping_cost')
+    .escape(),
+    check('discount_cost')
+    .escape(),
+    check('driver')
+    .escape(),
+    check('user')
+    .escape(),
+    check('shipping_address_id')
+    .escape(),
+    check('payment_option')
+    .escape(),
+    check('orderedDate')
+    .escape(),
+    check('deliveryDate')
+    .escape(),
+  ], [isAdminLoggedIn], orders.create_order)
+
+  // orders list
+  router.get('/getOrders', [isAdminLoggedIn], orders.getOrders)
+
+  //confirm order
+  router.post('/admin_confirm_order',[
+    check('status')
+    .escape(),
+    check('orderId')
+    .escape(),
+  ], [isAdminLoggedIn], orders.confirm_order)
 
   module.exports = router

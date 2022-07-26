@@ -172,16 +172,32 @@ exports.getRatings = async (req, res) => {
     if (!Helper.checkAuthToken(req.headers.auth_token, authParams)) {
     return res.status(200).json({ success: false, message: 'Authentication Failed', parameters: null })
     }
-    // measurements list
-    Ratings.find( {product:req.params.id},function (err, found) {
-        if(err) {
-            res.send({ status: 'error', message: 'error occured'})
-        } else if (found.length>0) {
-            return res.status(200).json({status: true, message:'Ratings found', data: found})
-        } else {
-            return res.send({status: false, message: 'Ratings not found'})
+    try{
+        let skip = 0
+        let limit = req.query.limit
+        let page = req.query.page
+        if (page != 1) {
+            skip = (page - 1) * 10
         }
-    })
+        let total = await Ratings.find( {product:req.query.productId}).count()
+        
+        // measurements list
+        Ratings.find( {product:req.query.productId},function (err, found) {
+            if(err) {
+                res.send({ status: 'error', message: 'error occured'})
+            } else if (found.length>0) {
+                return res.status(200).json({status: true, message:'Ratings found', data: found, total, limit: limit, current_page: page, next_page: parseInt(page) + 1, prev_page: (page === 1) ? 1 : page - 1 })
+            } else {
+                return res.send({status: false, message: 'Ratings not found', data: [], total, limit: limit, current_page: page, next_page: parseInt(page) + 1, prev_page: (page === 1) ? 1 : page - 1 })
+            }
+        }).skip(skip).limit(limit).sort({createdAt:-1})
+    } catch(e) {
+        console.log(e)
+        return res.status(500).json({
+        status: 'Error',
+        message: 'error occured'
+        })
+    }
 }
 
 
@@ -213,16 +229,31 @@ exports.getMeasurements = async (req, res) => {
     if (!Helper.checkAuthToken(req.headers.auth_token, authParams)) {
     return res.status(200).json({ success: false, message: 'Authentication Failed', parameters: null })
     }
-    // measurements list
-    Measurements.find( {is_active:true}, function (err, found) {
-        if(err) {
-            res.send({ status: 'error', message: 'error occured'})
-        } else if (found.length>0) {
-            return res.status(200).json({status: true, message:'measurements found', data: found})
-        } else {
-            return res.send({status: false, message: 'measurements not found'})
+    try{
+        let skip = 0
+        let limit = req.query.limit
+        let page = req.query.page
+        if (page != 1) {
+            skip = (page - 1) * 10
         }
-    })
+        let total = await Measurements.find( {is_active:true}).count()
+        // measurements list
+        Measurements.find( {is_active:true}, function (err, found) {
+            if(err) {
+                res.send({ status: 'error', message: 'error occured'})
+            } else if (found.length>0) {
+                return res.status(200).json({status: true, message:'measurements found', data: found, total, limit: limit, current_page: page, next_page: parseInt(page) + 1, prev_page: (page === 1) ? 1 : page - 1 })
+            } else {
+                return res.send({status: false, message: 'measurements not found', data: [], total, limit: limit, current_page: page, next_page: parseInt(page) + 1, prev_page: (page === 1) ? 1 : page - 1 })
+            }
+        }).skip(skip).limit(limit).sort({createdAt:-1})
+    } catch(e) {
+        console.log(e)
+        return res.status(500).json({
+            status: 'Error',
+            message: 'error occured'
+            })
+    }
 }
 
 // update measurements
@@ -341,6 +372,6 @@ exports.deleteBanner = async(req, res) => {
     if (!Helper.checkAuthToken(req.headers.auth_token, authParams)) {
     return res.status(200).json({ success: false, message: 'Authentication Failed', parameters: null })
     }
-    await Banners.deleteOne({_id: req.params.Id})
+    await Banners.deleteOne({_id: req.params.id})
     res.send({status: true, message: 'banner deleted successfully'})
 }

@@ -9,7 +9,7 @@ const isAdminLoggedIn = require('../helper/isAdminLoggedIn')
 router.post('/add_products', [isAdminLoggedIn], product.addProducts)
 router.post('/update_products', [isAdminLoggedIn], product.updateProducts)
 
-// user routes
+// genric routes
 router.get('/getProducts', product.getProducts)
 router.get('/getOneProduct/:id', product.getOneProduct)
 router.get('/getCategoryProducts', product.getCategoryProducts)

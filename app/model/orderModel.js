@@ -10,9 +10,6 @@ const OrderDetailsSchema = new mongoose.Schema({
         ref: 'UserDetails',
         autopopulate: true
     },
-    total: {
-        type: Number
-    },
     line_total: {
         type: Number
     },
@@ -26,7 +23,7 @@ const OrderDetailsSchema = new mongoose.Schema({
     },
     driver: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'DriverDetails',
+        ref: 'UserDetails',
         autopopulate: true
     },
     coupon: {
@@ -83,7 +80,8 @@ const OrderDetailsSchema = new mongoose.Schema({
         type: Date
     },
     is_active:{
-        type: Boolean
+        type: Boolean,
+        default:true
     }
 }, {
     timestamps: true,
@@ -94,7 +92,7 @@ var collectionName = 'orders'
 OrderDetailsSchema.virtual('order_id').get(function () { return this._id })
 OrderDetailsSchema.virtual('order_date').get(function () { return Timezone.changeFormat(this.date, 'YYYY-MM-DD') })
 OrderDetailsSchema.virtual('order_time').get(function () { return Timezone.changeFormat(this.date, 'hh:mm a') })
-OrderDetailsSchema.virtual('gtotal').get(function () { return (this.line_total + this.shipping_cost) - this.discount_cost })
+OrderDetailsSchema.virtual('grand_total').get(function () { return (this.line_total + this.shipping_cost) - this.discount_cost })
 
 OrderDetailsSchema.virtual('order_status').get(function () {
   return Orderstatus(this.status)
@@ -138,6 +136,7 @@ OrderDetailsSchema.set('toJSON', {
         delete ret.invoice_no
         delete ret.prefix
         delete ret.updatedAt
+        delete ret.total
     }
 })
 OrderDetailsSchema.plugin(require('mongoose-autopopulate'))

@@ -33,7 +33,7 @@ router.get('/profile', [isLoggedIn], users.getUsers)
 
 router.post('/ratings', [isLoggedIn], users.addRating)
 
-router.get('/getRatings/:id', users.getRatings)
+router.get('/getRatings', users.getRatings)
 
 
 
