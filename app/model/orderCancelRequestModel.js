@@ -1,34 +1,20 @@
 const mongoose = require('mongoose')
-const config = require('../config').get(process.env.NODE_ENV)
+const config = require('../helper/config').get(process.env.NODE_ENV)
 
 const cancelRequestSchema = new mongoose.Schema({
-  orderNo: {
-    type: Number
-  },
-  orderDate: {
-    type: Date
+  order: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'OrdersDetails',
+    autopopulate: true
   },
   user: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'UserDetails',
     autopopulate: true
   },
-  total: {
-    type: Number
-  },
-  cancelType: {
-    type: String,
-    enum: ['full', 'partial']
-  },
   reason: {
     type: String
-  },
-  image: { type: String },
-  orderItems: [{
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'OrderItemDetails'
-  }]
-
+  }
 }, {
   timestamps: true,
   strict: true

@@ -16,7 +16,7 @@ module.exports = function isLoggedIn (req, res, next) {
     Users.findOne({
       '_id': payload.user_id
     }, function (err, data) {
-            if (data) { 
+            if (data && data.role == 2) { 
                 req.body.user_id=data._id;
                 req.user_id=data._id;
             	next(); 

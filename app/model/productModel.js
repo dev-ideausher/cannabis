@@ -14,9 +14,6 @@ const productDetailsSchema = new mongoose.Schema({
   license_no: {
     type:String
   },
-  image_url:{
-    type:String
-  },
   product_type:{
     type:String
   },
@@ -45,6 +42,13 @@ productDetailsSchema.virtual('ratings', {
 
 productDetailsSchema.virtual('stock_price', {
   ref: 'InventoryDetails',
+  localField: '_id',
+  foreignField: 'product',
+  autopopulate: true
+})
+
+productDetailsSchema.virtual('product_image', {
+  ref: 'ProductImageDetails',
   localField: '_id',
   foreignField: 'product',
   autopopulate: true

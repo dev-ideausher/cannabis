@@ -9,6 +9,7 @@ const { validationResult } = require('express-validator')
 
 
 exports.otp_login = async (req, res) => {
+    //validate i/p
     const errors = validationResult(req)
     if (!errors.isEmpty()) {
         return res.status(400).json({ success: false, message: 'Invalid Inputs', errors: errors.array(), code: 'INVALID_INPUT' })

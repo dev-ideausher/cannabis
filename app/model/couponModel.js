@@ -7,8 +7,8 @@ const couponsDetailsSchema = new mongoose.Schema({
     },
     discount_type: {
         type: String,
-        enum: ['FIXED', 'PERCENTAGE', 'AMOUNT'],
-        default: 'FIXED'
+        enum: ['PERCENTAGE', 'AMOUNT'],
+        default: 'AMOUNT'
     },
     start_date: {
         type: Date
@@ -16,7 +16,7 @@ const couponsDetailsSchema = new mongoose.Schema({
     expire_date: {
         type: Date
     },
-    amount: {
+    type_value: {
         type: Number
     },
     is_active: {
@@ -35,14 +35,10 @@ const couponsDetailsSchema = new mongoose.Schema({
     max_discount: {
         type: Number
     },
-    is_new_customer: {
-        type: Boolean,
-        default: false
-    },
     type: {
         type: String,
-        enum: ['PRODUCT', 'DELIVERY', 'USER', 'GLOBAL'],
-        default: 'PRODUCT'
+        enum: [ 'GLOBAL', 'PRODUCT'],
+        default: 'GLOBAL'
     }
 }, {
     timestamps: true,
@@ -63,12 +59,6 @@ couponsDetailsSchema.virtual('start_status').get(function() {
 
 couponsDetailsSchema.virtual('products', {
     ref: 'CouponProductDetails',
-    localField: '_id',
-    foreignField: 'coupon'
-});
-
-couponsDetailsSchema.virtual('users', {
-    ref: 'CustomerGroupDetails',
     localField: '_id',
     foreignField: 'coupon'
 });

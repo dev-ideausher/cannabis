@@ -12,21 +12,21 @@ module.exports = function isLoggedIn(req, res, next) {
 
         const payload = jwt.decode(token, config.jwtSecret)
         Users.findOne({"_id": payload.user_id, role: 1}, function(err, data) {
-            if (data) {
-                req.body.admin_id = data._id;
-                req.admin_id = data._id;
-                next();
+            if (data && data.role == 1) {
+                req.body.admin_id = data._id
+                req.admin_id = data._id
+                next()
             } else {
                 //If error send Forbidden (401)
-                res.status(401).send({ "status": false, "message": "Unauthorized User" });
+                res.status(401).send({ "status": false, "message": "Unauthorized User" })
             }
 
         });
     } else {
-        res.status(403).send({ "status": false, "message": "Please login and try to purchase" });
+        res.status(403).send({ "status": false, "message": "Please login and try to purchase" })
     }
     } else {
         //If header is undefined return Forbidden (403)
-        res.status(403).send({ "status": false, "message": "Authentication is required" });
+        res.status(403).send({ "status": false, "message": "Authentication is required" })
     }
 };

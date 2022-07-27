@@ -12,7 +12,7 @@ const config = {
       port: 6000,
       AWS_ACCESS_KEY:"AKIAYBTHCJZG6SQKCB4O",
       AWS_SECRET_KEY:"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",
-      AWS_S3_USER_BUCKET_NAME:"cannabisimage"
+      AWS_S3_USER_ID_BUCKET_NAME:"cannabisimage"
     },
     development: {
         jwtSecret: 'ideaUsher@2',
@@ -27,7 +27,7 @@ const config = {
         port: 6000,
         AWS_ACCESS_KEY:"AKIAYBTHCJZG6SQKCB4O",
         AWS_SECRET_KEY:"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",
-        AWS_S3_USER_BUCKET_NAME:"cannabisimage"
+        AWS_S3_USER_ID_BUCKET_NAME:"cannabisimage"
     }
   }
   

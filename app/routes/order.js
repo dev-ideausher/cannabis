@@ -32,6 +32,14 @@ router.post('/create_order',[
   //list orders
   router.get('/getUserOrders', [isLoggedIn], orders.getUserOrders)
 
+  //cancel order
+  router.post('/cancel_order', [
+    check('orderId')
+    .escape(),
+    check('reason')
+    .escape()
+  ], [isLoggedIn], orders.cancelOrder)
+
 
   //admin routes
 
@@ -69,5 +77,15 @@ router.post('/create_order',[
     check('orderId')
     .escape(),
   ], [isAdminLoggedIn], orders.confirm_order)
+
+  router.post('/admin_cancel_order',[
+    check('orderId')
+    .escape()
+  ], [isAdminLoggedIn], orders.admincancelOrders)
+
+  router.post('/admin_accept_cancel_order',[
+    check('orderId')
+    .escape()
+  ], [isAdminLoggedIn], orders.adminAcceptCancelOrders)
 
   module.exports = router
