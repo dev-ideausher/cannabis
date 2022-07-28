@@ -40,4 +40,5 @@ router.post('/addCoupon',[
   //user routes
   router.get('/getCoupon', [isLoggedIn], coupon.getCoupon)
 
+  router.post('/applyCoupon', [isLoggedIn], coupon.applyCoupon)
   module.exports = router

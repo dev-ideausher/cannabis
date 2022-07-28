@@ -1,4 +1,5 @@
 const Users = require('../model/userModel')
+const UserWallet = require('../model/userWalletModel')
 const Ratings = require('../model/ratingModel')
 const Measurements = require('../model/measurementModel')
 const Banners = require('../model/bannerModel')
@@ -31,8 +32,14 @@ exports.otp_login = async (req, res) => {
             login_type: 'OTP',
             referral_code: 'REF-' + ref
         }
+        
         // insert user
         const userres = await Users.create(user)
+        const walletJson = {
+            amount:0,
+            user: userres._id
+        }
+        const walletcreation = await UserWallet.create(walletJson)
         if(userres) {
             return await sendOtp(userres, res)
         } else {

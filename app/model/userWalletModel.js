@@ -12,7 +12,8 @@ const WalletSchema = new mongoose.Schema({
         type: String
     },
     isActive: {
-        type: Boolean
+        type: Boolean,
+        default: true
     }
 },{
     timestamps: true,

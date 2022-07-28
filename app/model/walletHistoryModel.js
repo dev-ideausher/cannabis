@@ -10,7 +10,7 @@ const walletHitorySchema = new mongoose.Schema({
   },
   payment_type:{
     type: String,
-    enum: ['deposit', 'paid']
+    enum: ['deposit', 'order']
   },
   order: {
     type: mongoose.Schema.Types.ObjectId,
