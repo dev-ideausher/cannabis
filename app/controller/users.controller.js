@@ -3,11 +3,34 @@ const UserWallet = require('../model/userWalletModel')
 const Ratings = require('../model/ratingModel')
 const Measurements = require('../model/measurementModel')
 const Banners = require('../model/bannerModel')
+const UserCard = require('../model/userCardModel')
 const config = require('../helper/config').get(process.env.NODE_ENV)
 const jwt = require('jwt-simple')
 const Helper = require('../helper/authtoken')
 const { validationResult } = require('express-validator')
+const md5 = require('md5')
+const crypto = require('crypto')
+const algorithm = 'aes-256-cbc' //Using AES encryption
+const key = crypto.randomBytes(32)
+const iv = crypto.randomBytes(16);
 
+
+function encrypt(text) {
+    let cipher = crypto.createCipheriv('aes-256-cbc', Buffer.from(key), iv)
+    let encrypted = cipher.update(text)
+    encrypted = Buffer.concat([encrypted, cipher.final()])
+    return { iv: iv.toString('hex'), encryptedData: encrypted.toString('hex') }
+}
+
+ function decrypt(text) {
+    let iv = Buffer.from(text.iv, 'hex')
+    let encryptedText = Buffer.from(text.encryptedData, 'hex')
+    let decipher = crypto.createDecipheriv('aes-256-cbc', Buffer.from(key), iv)
+    let decrypted = decipher.update(encryptedText)
+    decrypted = Buffer.concat([decrypted, decipher.final()])
+    return decrypted.toString()
+ }
+ 
 
 exports.otp_login = async (req, res) => {
     //validate i/p
@@ -361,7 +384,7 @@ exports.getBanner = async (req, res) => {
     if (!Helper.checkAuthToken(req.headers.auth_token, authParams)) {
     return res.status(200).json({ success: false, message: 'Authentication Failed', parameters: null })
     }
-    // measurements list
+    // banner list
     Banners.find({is_active: true}, function (err, found) {
         if(err) {
             res.send({ status: 'error', message: 'error occured'})
@@ -382,4 +405,69 @@ exports.deleteBanner = async(req, res) => {
     }
     await Banners.deleteOne({_id: req.params.id})
     res.send({status: true, message: 'banner deleted successfully'})
+}
+
+//add Card Details
+exports.addCardDetails = async (req, res) => {
+    //auth token validate
+    const authParams = config.SALT
+    if (!Helper.checkAuthToken(req.headers.auth_token, authParams)) {
+    return res.status(200).json({ success: false, message: 'Authentication Failed', parameters: null })
+    }
+    //i/p validation
+    const errors = validationResult(req)
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ success: false, message: 'Invalid Inputs', errors: errors.array(), code: 'INVALID_INPUT' })
+    }
+
+    const cardDetailsJson = {
+        user:req.user_id,
+        card_holder_name:encrypt(req.body.card_holder_name),
+        card_number:encrypt(req.body.card_number),
+        cvc:encrypt(req.body.cvc),
+        card_type:req.body.card_type,
+        expiryDate:req.body.expiryDate
+    }
+    const userCard = await UserCard.create(cardDetailsJson)
+    res.send({status:true, message:"user card details added"})
+}
+
+//get user card details
+exports.getCardDetails = async (req, res) => {
+    //auth token validate
+    const authParams = config.SALT
+    if (!Helper.checkAuthToken(req.headers.auth_token, authParams)) {
+    return res.status(200).json({ success: false, message: 'Authentication Failed', parameters: null })
+    }
+    // measurements list
+    UserCard.find({is_active: true}, function (err, found) {
+        if(err) {
+            res.send({ status: 'error', message: 'error occured'})
+        } else if (found.length>0) {
+            let arr = []
+            found.forEach(ele => {
+                const cardJson = {
+                    card_holder_name:decrypt(ele.card_holder_name),
+                    card_number:decrypt(ele.card_number),
+                    card_type:ele.card_type
+                }
+                arr.push(cardJson)
+            })
+            return res.status(200).json({status: true, message:'user card details found', data: arr})
+        } else {
+            return res.send({status: false, message: 'user card details not found'})
+        }
+    })
+}
+
+
+// delete card details
+exports.deleteCardDetails = async(req, res) => {
+    //auth token validate
+    const authParams = config.SALT
+    if (!Helper.checkAuthToken(req.headers.auth_token, authParams)) {
+    return res.status(200).json({ success: false, message: 'Authentication Failed', parameters: null })
+    }
+    await UserCard.deleteOne({_id: req.params.Id})
+    res.send({status: true, message: 'card details deleted successfully'})
 }

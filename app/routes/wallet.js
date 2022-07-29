@@ -14,4 +14,6 @@ router.post('/addWalletTransaction', [
     .escape()
 ],[isLoggedIn], wallets.addWalletTransaction)
 
+router.get('/getWalletTransaction', [isLoggedIn], wallets.getWalletTransaction)
+
 module.exports = router

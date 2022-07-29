@@ -35,6 +35,12 @@ router.post('/ratings', [isLoggedIn], users.addRating)
 
 router.get('/getRatings', users.getRatings)
 
+router.post('/addCardDetails', [isLoggedIn], users.addCardDetails)
+
+router.get('/getCardDetails', [isLoggedIn], users.getCardDetails)
+
+router.get('/deleteCardDetails', [isLoggedIn], users.deleteCardDetails)
+
 
 
 // admin routes

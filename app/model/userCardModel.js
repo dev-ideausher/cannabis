@@ -1,14 +1,28 @@
 const mongoose = require('mongoose')
 
 const userCardSchema = new mongoose.Schema({
+    user: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'UserDetails'
+    },
     card_holder_name:{
-        type: String,
+        type: Object,
     },
     card_number:{
+        type: Object
+    },
+    cvc:{
+        type: Object
+    },
+    card_type:{
         type: String
     },
+    expiryDate: {
+        type:Date
+    },
     isActive: {
-        type: Boolean
+        type: Boolean,
+        default: true
     }
 },{
     timestamps: true,

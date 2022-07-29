@@ -10,7 +10,7 @@ const walletHitorySchema = new mongoose.Schema({
   },
   payment_type:{
     type: String,
-    enum: ['deposit', 'order']
+    enum: ['DEPOSIT', 'ORDER']
   },
   order: {
     type: mongoose.Schema.Types.ObjectId,
@@ -34,4 +34,4 @@ walletHitorySchema.set('toJSON', {
   }
 })
 walletHitorySchema.plugin(require('mongoose-autopopulate'))
-module.exports = mongoose.model('WalletHistory', categorySchema, 'WalletHistory')
+module.exports = mongoose.model('WalletHistory', walletHitorySchema, 'WalletHistory')
