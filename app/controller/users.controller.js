@@ -10,26 +10,10 @@ const Helper = require('../helper/authtoken')
 const { validationResult } = require('express-validator')
 const md5 = require('md5')
 const crypto = require('crypto')
-const algorithm = 'aes-256-cbc' //Using AES encryption
 const key = crypto.randomBytes(32)
-const iv = crypto.randomBytes(16);
-
-
-function encrypt(text) {
-    let cipher = crypto.createCipheriv('aes-256-cbc', Buffer.from(key), iv)
-    let encrypted = cipher.update(text)
-    encrypted = Buffer.concat([encrypted, cipher.final()])
-    return { iv: iv.toString('hex'), encryptedData: encrypted.toString('hex') }
-}
-
- function decrypt(text) {
-    let iv = Buffer.from(text.iv, 'hex')
-    let encryptedText = Buffer.from(text.encryptedData, 'hex')
-    let decipher = crypto.createDecipheriv('aes-256-cbc', Buffer.from(key), iv)
-    let decrypted = decipher.update(encryptedText)
-    decrypted = Buffer.concat([decrypted, decipher.final()])
-    return decrypted.toString()
- }
+const iv = crypto.randomBytes(16)
+const Cryptr = require('cryptr')
+const cryptr = new Cryptr(key + iv)
  
 
 exports.otp_login = async (req, res) => {
@@ -422,9 +406,9 @@ exports.addCardDetails = async (req, res) => {
 
     const cardDetailsJson = {
         user:req.user_id,
-        card_holder_name:encrypt(req.body.card_holder_name),
-        card_number:encrypt(req.body.card_number),
-        cvc:encrypt(req.body.cvc),
+        card_holder_name:cryptr.encrypt(req.body.card_holder_name),
+        card_number:cryptr.encrypt(req.body.card_number),
+        cvc:cryptr.encrypt(req.body.card_number),
         card_type:req.body.card_type,
         expiryDate:req.body.expiryDate
     }
@@ -447,8 +431,8 @@ exports.getCardDetails = async (req, res) => {
             let arr = []
             found.forEach(ele => {
                 const cardJson = {
-                    card_holder_name:decrypt(ele.card_holder_name),
-                    card_number:decrypt(ele.card_number),
+                    card_holder_name:cryptr.decrypt(ele.card_holder_name),
+                    card_number:cryptr.decrypt(ele.card_number),
                     card_type:ele.card_type
                 }
                 arr.push(cardJson)

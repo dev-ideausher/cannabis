@@ -4,6 +4,9 @@ const OrderCancel = require('../model/orderCancelRequestModel')
 const Helper = require('../helper/authtoken')
 const { validationResult } = require('express-validator')
 const config = require('../helper/config').get(process.env.NODE_ENV)
+const stripe = require('stripe')('sk_test_51LRxHXSBZA8RsHM9oa3ygSOe1nu64HuZtJXVGm3FVsBnmrEsw80LzO2X4WTdsUWIjNyeRRy7sYjBpoqDxT5tAsZM002SCNQrAP')
+const Paymentstatus = require('../model/paymentStatus')
+
 
 // create order
 exports.create_order = async (req, res) => {
@@ -18,6 +21,16 @@ exports.create_order = async (req, res) => {
       return res.status(403).json({ success: false, message: 'Authentication Failed', parameters: null })
     }
     try {
+      const userJson = {
+        email:req.body.email,
+        token:req.body.token
+      }
+      const orderJson = {
+        price:req.body.line_total + req.body.shipping_cost + req.body.discount_cost,
+        description: 'cann-goods'
+      }
+       StripePayment(userJson,orderJson)
+       await Paymentstatus.create({})
         await Orders.create(req.body, async function (err, ordered) {
             if(err) {
               console.log(err.message)
@@ -78,7 +91,7 @@ exports.getOrders = async (req, res) => {
       return res.status(400).json({ success: false, message: 'Invalid Inputs', errors: errors.array(), code: 'INVALID_INPUT' })
     }
     // auth token
-    const authParams = config.SALT
+    const authParams = config.SALT 
     if (!Helper.checkAuthToken(req.headers.auth_token, authParams)) {
       return res.status(403).json({ success: false, message: 'Authentication Failed', parameters: null })
     }
@@ -231,4 +244,25 @@ exports.adminAcceptCancelOrders = async (req, res) => {
           message: 'error occured'
         })
     }
+}
+
+//stripe function
+const StripePayment = async (userData,orderData) => {
+  //check customer
+  const customer = await stripe.customers.retrieve(userData.token, async function (err, found) {
+      if (err) {
+        res.send({status:'error', message:'error occured'})
+      } else if(found) {
+            const c = await stripe.charges.create({
+                amount: orderData.price,
+                description: orderData.description,
+                currency: 'INR',
+                customer: customer.id
+            })
+            console.log(c)
+    } else {
+      res.send({status:false, message:"customer details not found"})
+    }
+  })
+  
 }

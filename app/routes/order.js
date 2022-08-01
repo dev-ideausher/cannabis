@@ -88,4 +88,6 @@ router.post('/create_order',[
     .escape()
   ], [isAdminLoggedIn], orders.adminAcceptCancelOrders)
 
+  // router.post('/payments', [], orders.payments)
+
   module.exports = router
