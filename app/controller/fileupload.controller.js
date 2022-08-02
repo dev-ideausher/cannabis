@@ -1,6 +1,6 @@
 const Users = require('../model/userModel')
 const ProductImage = require('../model/productImageModel')
-const Banners = require('../model/bannerModel')
+const VehicleRegisteration = require('../model/vehicleRegisterModel')
 const Helper = require('../helper/authtoken')
 const config = require('../helper/config').get(process.env.NODE_ENV)
 const uploadFile = require('../helper/uploadFile')
@@ -32,9 +32,16 @@ exports.uploadImage = async (req, res) => {
     } else if (type == 'banner') {
         filename = filename + "banner-" + req.file.originalname
         link = await uploadFile(filename, USER_IMAGE_ID_BUCKET, file, req.file.mimetype)
-    } else if (type == 'catgeory') {
+    } else if (type == 'category') {
         filename = filename + "category-" + req.file.originalname
         link = await uploadFile(filename, USER_IMAGE_ID_BUCKET, file, req.file.mimetype)
+    } else if(type == 'userImage') {
+        filename = filename + "user-image" + req.file.originalname
+        link = await uploadFile(filename, config.AWS_S3_BUCKET_NAME, file, req.file.mimetype)
+        await Users.findOneAndUpdate({_id:req.user_id}, {image_url:link})
+    } else if(type == 'vehicleRegisteration') {
+        filename = filename + "user-image" + req.file.originalname
+        link = await uploadFile(filename, config.AWS_S3_BUCKET_NAME, file, req.file.mimetype)
     } else {
         filename = filename + req.file.originalname
         link = await uploadFile(filename, USER_IMAGE_ID_BUCKET, file, req.file.mimetype)

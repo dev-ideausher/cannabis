@@ -80,5 +80,5 @@ exports.address = async (req, res) => {
   // delete user address
   exports.deleteaddress = async (req, res) => {
     const addressInfo = await UserAddress.deleteOne({ _id: req.params.id })
-    return res.status(200).json({ success: true, message: 'Address Deleted ' })
+    return res.status(200).json({ success: true, message: 'Address Deleted' })
   }

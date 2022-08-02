@@ -2,7 +2,7 @@ const Users = require('../model/userModel');
 const jwt = require('jwt-simple')
 const config = require('../helper/config').get(process.env.NODE_ENV)
 
-module.exports = function isAdminLoggedIn(req, res, next) {
+module.exports = function isDriverLoggedIn(req, res, next) {
 
     const header = req.headers['authorization'];
     if (typeof header !== 'undefined' && header !== '' && header !== null) {
@@ -11,10 +11,10 @@ module.exports = function isAdminLoggedIn(req, res, next) {
         if(token) {
 
         const payload = jwt.decode(token, config.jwtSecret)
-        Users.findOne({"_id": payload.user_id, role: 1}, function(err, data) {
-            if (data && data.role == 1) {
-                req.body.admin_id = data._id
-                req.admin_id = data._id
+        Users.findOne({"_id": payload.user_id, role: 3}, function(err, data) {
+            if (data && data.role == 3) {
+                req.body.driver_id = data._id
+                req.driver_id = data._id
                 next()
             } else {
                 //If error send Forbidden (401)

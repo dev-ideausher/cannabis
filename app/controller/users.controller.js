@@ -14,6 +14,7 @@ const key = crypto.randomBytes(32)
 const iv = crypto.randomBytes(16)
 const Cryptr = require('cryptr')
 const cryptr = new Cryptr(key + iv)
+const VehicleRegister = require('../model/vehicleRegisterModel')
  
 
 exports.otp_login = async (req, res) => {
@@ -107,10 +108,66 @@ exports.validate_otp = async (req, res) => {
                 const op = users.toJSON()
                 const token = 'Bearer ' + jwt.encode(op, config.jwtSecret)
                  op.token = token
-                return res.status(200).json({ success: true, message: 'Logged in successfully', Users: op })
+                return res.status(200).json({ success: true, message: 'Logged in successfully', data: op })
             }
          })
     }
+}
+
+// social register
+exports.socialRegister = async (req, res) => {
+    const errors = validationResult(req)
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ success: false, message: 'Invalid Inputs', errors: errors.array(), code: 'INVALID_INPUT' })
+    }
+    //auth token validate
+    const authParams = config.SALT
+    if (!Helper.checkAuthToken(req.headers.auth_token, authParams)) {
+      return res.status(200).json({ success: false, message: 'Authentication Failed', parameters: null })
+    }
+    await Users.create(req.body, function (err, created) {
+        if(err) {
+            res.send({status:'error', message:'error occured'})
+        } else if (created) {
+            const op = created.toJSON()
+                const token = 'Bearer ' + jwt.encode(op, config.jwtSecret)
+                 op.token = token
+            res.send({status:true, message: 'user created', data:op})
+        } else {
+            res.send({status: false, message:'user not created'})
+        }
+    })
+}
+
+// social Login
+exports.socialLogin = async (req, res) => {
+    const errors = validationResult(req)
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ success: false, message: 'Invalid Inputs', errors: errors.array(), code: 'INVALID_INPUT' })
+    }
+    //auth token validate
+    const authParams = config.SALT
+    if (!Helper.checkAuthToken(req.headers.auth_token, authParams)) {
+      return res.status(200).json({ success: false, message: 'Authentication Failed', parameters: null })
+    }
+    let query = {}
+    if(type === 'facebook') {
+        query = {'socialInfo.facebookId':id}
+    } else if(type === 'google') {
+        query = {'socialInfo.googleId':id}
+    } else {
+        query = {'socialInfo.appleId':id}
+    }
+    Users.findOne(query, async function (err, found) {
+        if(err) {
+            res.status(400).json({status: 'error', message: 'error occured'})
+        } else if(found) {
+            const op = users.toJSON()
+            const token = 'Bearer ' + jwt.encode(op, config.jwtSecret)
+             op.token = token
+            return res.status(200).json({ success: true, message: 'Logged in successfully', Users: op })
+        }
+     })
 }
 
 // update user info
@@ -126,13 +183,13 @@ exports.userupdate = async (req, res) => {
       return res.status(200).json({ success: false, message: 'Authentication Failed', parameters: null })
     }
     // user json
-    const userdata = {
-        firstName: req.body.firstName,
-        lastName: req.body.lastName,
-        dob: req.body.dob
-    }
+    // const userdata = {
+    //     firstName: req.body.firstName,
+    //     lastName: req.body.lastName,
+    //     dob: req.body.dob
+    // }
     // update user
-    Users.findOneAndUpdate({ _id: req.user_id }, userdata, function (err, updated) {
+    Users.findOneAndUpdate({ _id: req.user_id }, req.body, function (err, updated) {
         if(err) {
             res.status(400).json({status: 'error', message: 'error occured'})
         } else if (updated) {
@@ -444,7 +501,6 @@ exports.getCardDetails = async (req, res) => {
     })
 }
 
-
 // delete card details
 exports.deleteCardDetails = async(req, res) => {
     //auth token validate
@@ -454,4 +510,19 @@ exports.deleteCardDetails = async(req, res) => {
     }
     await UserCard.deleteOne({_id: req.params.Id})
     res.send({status: true, message: 'card details deleted successfully'})
+}
+
+// driver vehicle register
+exports.vehicleRegister = async(req, res) => {
+    const authParams = config.SALT
+    if (!Helper.checkAuthToken(req.headers.auth_token, authParams)) {
+    return res.status(200).json({ success: false, message: 'Authentication Failed', parameters: null })
+    }
+    //i/p validation
+    const errors = validationResult(req)
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ success: false, message: 'Invalid Inputs', errors: errors.array(), code: 'INVALID_INPUT' })
+    }
+    const vehicleRegister = await VehicleRegister.create(req.body)
+    res.send({status:true, message:"vehicle Register done", data:vehicleRegister})
 }

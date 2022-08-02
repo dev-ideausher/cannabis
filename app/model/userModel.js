@@ -45,6 +45,17 @@ const userSchema = new mongoose.Schema({
     },
     otp:{
         type: Number
+    },
+    image_url:{
+        type: Number
+    },
+    socialInfo:{
+        facebookId:String,
+        googleId:String,
+        appleId:String
+    },
+    isFaceMatched:{
+        type:Boolean
     }
 }, {
     timestamps: true,
@@ -52,9 +63,6 @@ const userSchema = new mongoose.Schema({
 })
 
 userSchema.virtual('user_id').get(function() { return this._id; })
-userSchema.virtual('front_id').get(function() { if(this.frontId != undefined){return config.BaseUrl+this.frontId} else {return ''} })
-userSchema.virtual('back_id').get(function() { if(this.backId != undefined){return config.BaseUrl+this.backId} else {return ''} })
-
 userSchema.virtual('address', {
     ref: 'AddressDetails',
     localField: '_id',

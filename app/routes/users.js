@@ -4,6 +4,7 @@ const { check } = require('express-validator')
 const users = require('../controller/users.controller')
 const isLoggedIn = require('../helper/isLoggedIn')
 const isAdminLoggedIn = require('../helper/isAdminLoggedIn')
+const isDriverLoggedIn = require('../helper/isDriverLoggedIn')
 
 // user routes
 router.post('/login',[
@@ -40,6 +41,12 @@ router.post('/addCardDetails', [isLoggedIn], users.addCardDetails)
 router.get('/getCardDetails', [isLoggedIn], users.getCardDetails)
 
 router.get('/deleteCardDetails', [isLoggedIn], users.deleteCardDetails)
+
+router.post('/registerSocialLogin', users.socialRegister)
+
+router.post('/socialLogin', users.socialLogin)
+
+
 
 
 
@@ -86,6 +93,10 @@ router.post('/updateBanner',[
 router.get('/getBanner', [isAdminLoggedIn], users.getBanner)
 
 router.get('/deleteBanner/:id', [isAdminLoggedIn], users.deleteBanner)
+
+//driver routes
+
+router.post('/vehicleRegister', [isDriverLoggedIn], user.vehicleRegister)
 
 
 

@@ -29,8 +29,9 @@ exports.create_order = async (req, res) => {
         price:req.body.line_total + req.body.shipping_cost + req.body.discount_cost,
         description: 'cann-goods'
       }
-       StripePayment(userJson,orderJson)
-       await Paymentstatus.create({})
+      const stripeData =  StripePayment(userJson,orderJson)
+      const statusJson = {}
+       await Paymentstatus.create(statusJson)
         await Orders.create(req.body, async function (err, ordered) {
             if(err) {
               console.log(err.message)
